@@ -24,12 +24,12 @@
 				//inserts new row at next position
 				var newRow = taskTable.insertRow(rowCount);
 				//assign id equal to row count
-				x = x+1;
 				newRow.id = x;
 				//insert task value into cell
 				var cell = newRow.insertCell(0);
 				cell.innerHTML = newTask + "<input type=\"checkbox\" id=\"" + x + "\" onClick=\"removetask(this)\"></input>";
 				alert(rowCount);
+				x = x+1;
 				return x;
 				//test
 				/*alert("your table has " + rowCount.toString() + " rows. Your new task is: " + newTask);*/
