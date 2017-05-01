@@ -2,7 +2,7 @@
 	<head>
 		<link rel="stylesheet" href="style.css">
 	</head>
-	<body>
+	<body onload="readCookie()">
 		<div id="pagewrapper">
 			<h1>Simple To-Do</h1>
 			<div id="todotable">
@@ -15,6 +15,7 @@
 		</div>
 		<script type="text/javascript">
 			var x = 1;
+			var tasks = [];
 			function addTask(){
 				//gets input value
 				var newTask = document.getElementById("task").value;
@@ -28,15 +29,20 @@
 				//insert task value into cell
 				var cell = newRow.insertCell(0);
 				cell.innerHTML = newTask + "<input type=\"checkbox\" id=\"" + x + "\" onClick=\"removetask(this)\"></input>";
-				alert(rowCount);
+				tasks.push(newTask);
+				var JSONreadyTasks = JSON.stringify(tasks);
+				localStorage.setItem('tasks', JSONreadyTasks);
 				x = x+1;
+				return tasks;
 				return x;
+				//test
+				/*alert("your table has " + rowCount.toString() + " rows. Your new task is: " + newTask);*/
 				
 			}
 			function removetask(me){
 				//get id of checkbox
 				var removeTask = me.id;
-				//debut alert
+				//debug alert
 				//alert(removeTask);
 				//get each tr element
 				var allTasks = document.getElementsByTagName("tr");
@@ -52,10 +58,48 @@
 						//get elements with matching id of checkbox that triggered function
 						var element = document.getElementById(removeTask);
 						//delete the element
+						var elementHTML = element.innerHTML;
 						element.outerHTML='';
 						delete element;
+						removeFromCookie(elementHTML);
 					}
 				}
+				
+			}
+			function readCookie(){
+				var savedTasks = JSON.parse(localStorage['tasks']);
+				console.log(tasks);
+				for (var i = 0; i < savedTasks.length; i++)
+					{
+						var taskTable = document.getElementById("todoList");
+						var newRow = taskTable.insertRow(x);
+						//assign id equal to row count
+						newRow.id = x;
+						//insert task value into cell
+						var cell = newRow.insertCell(0);
+						cell.innerHTML = savedTasks[i] + "<input type=\"checkbox\" id=\"" + x + "\" onClick=\"removetask(this)\"></input>";
+						//alert(rowCount);
+						tasks.push(savedTasks[i]);
+						var JSONreadyTasks = JSON.stringify(tasks);
+						localStorage.setItem('tasks', JSONreadyTasks);
+						x = x+1;
+					}
+					return x;
+					return tasks;
+			}
+			function removeFromCookie(elementHTML){
+				var newTasksArr = [];
+				var currentTasks = JSON.parse(localStorage['tasks']);
+				for (var i = 0; i < currentTasks.length; i++)
+				{
+					if (elementHTML.includes(currentTasks[i]))
+					{
+						currentTasks[i] = " ";
+					}
+				}
+				newTasksArr = currentTasks.filter(function(update){return update.length>1});
+				var JSONreadyTasks = JSON.stringify(newTasksArr);
+				localStorage.setItem('tasks', JSONreadyTasks);
 			}
 		</script>
 	</body>
